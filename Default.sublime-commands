@@ -215,5 +215,57 @@
     {
         "caption": "git: reset (reflog)",
         "command": "gs_reset_reflog"
+    },
+    {
+        "caption": "git flow: init",
+        "command": "gs_git_flow_init"
+    },
+    {
+        "caption": "git flow: feature start",
+        "command": "gs_git_flow_feature_start"
+    },
+    {
+        "caption": "git flow: feature finish",
+        "command": "gs_git_flow_feature_finish"
+    },
+    {
+        "caption": "git flow: release start",
+        "command": "gs_git_flow_release_start"
+    },
+    {
+        "caption": "git flow: release finish",
+        "command": "gs_git_flow_release_finish"
+    },
+    {
+        "caption": "git flow: hotfix start",
+        "command": "gs_git_flow_hotfix_start"
+    },
+    {
+        "caption": "git flow: hotfix finish",
+        "command": "gs_git_flow_hotfix_finish"
+    },
+    {
+        "caption": "git flow: support start",
+        "command": "gs_git_flow_support_start"
+    },
+    {
+        "caption": "git flow: feature publish",
+        "command": "gs_git_flow_feature_publish"
+    },
+    {
+        "caption": "git flow: feature pull",
+        "command": "gs_git_flow_feature_pull"
+    },
+    {
+        "caption": "git flow: release publish",
+        "command": "gs_git_flow_release_publish"
+    },
+    {
+        "caption": "git flow: release pull",
+        "command": "gs_git_flow_release_pull"
+    },
+    {
+        "caption": "git flow: hotfix publish",
+        "command": "gs_git_flow_hotfix_publish"
     }
 ]
