@@ -20,6 +20,10 @@ When running this command when an existing feature/release/hotfix/support branch
 
 When running this command when an existing feature/release/hotfix branch is checked out, you will asked to confirm publish. Otherwise, you will be asked to select the relevant branch. This flow pushes the target branch to the configured remote.
 
+## `git flow: feature/release track`
+
+When running this command you will be prompted to provide a feature name. The command will pull a feature/release from a configured remote and check it out.
+
 ## `git flow: feature pull`
 
-This will pull the feature from given remote. You will be first prompted to select a remote and then to provide a feature name.
+This will pull a feature from a given remote (not necessarily the configured default remote) and check it out. You will be first prompted to select a remote and then to provide a feature name.

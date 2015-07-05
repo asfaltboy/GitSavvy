@@ -257,12 +257,20 @@
         "command": "gs_git_flow_feature_pull"
     },
     {
+        "caption": "git flow: feature track",
+        "command": "gs_git_flow_feature_track"
+    },
+    {
         "caption": "git flow: release publish",
         "command": "gs_git_flow_release_publish"
     },
     {
         "caption": "git flow: release pull",
         "command": "gs_git_flow_release_pull"
+    },
+    {
+        "caption": "git flow: release track",
+        "command": "gs_git_flow_release_track"
     },
     {
         "caption": "git flow: hotfix publish",

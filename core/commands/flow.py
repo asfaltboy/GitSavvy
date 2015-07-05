@@ -145,23 +145,30 @@ class GsGitFlowInitCommand(GsFlowCommon):
         sublime.status_message("git flow initialized")
 
 
-class GitFlowGenericStartMixin(object):
+class CompleteMixin(object):
+    def complete_flow(self, name=None):
+        self.git("flow", self.flow, self.command, name)
+        self.show_status_update()
+
+    def show_status_update(self):
+        sublime.status_message("%s %sed, checked out %s" %
+                               (self.flow.capitalize(), self.command,
+                                self.get_current_branch_name()))
+
+
+class GenericStartMixin(CompleteMixin):
+    command = 'start'
+
     def run(self, **kwargs):
-        super(GitFlowGenericStartMixin, self).run()
+        super(GenericStartMixin, self).run(**kwargs)
         self.prefix = self.flow_settings[self.prefix_setting]
-        self.window.show_input_panel(self.query, "", self.on_name_chosen,
+        self.window.show_input_panel(self.query, "", self.complete_flow,
                                      None, None)
 
-    def on_name_chosen(self, name):
-        self.git("flow", self.flow, "start", name)
-        sublime.status_message("%s started, checked out branch %s" %
-                               self.flow.capitalize(),
-                               self.get_current_branch_name())
 
-
-class GitFlowGenericSelectTargetBranch(object):
+class GenericSelectTargetBranch(object):
     def run(self, name=None, **kwargs):
-        super(GitFlowGenericSelectTargetBranch, self).run()
+        super(GenericSelectTargetBranch, self).run(**kwargs)
         self.prefix = self.flow_settings[self.prefix_setting]
         self.curbranch = self.get_current_branch_name()
 
@@ -193,49 +200,62 @@ class GitFlowGenericSelectTargetBranch(object):
         return self.complete_flow(name=value)
 
 
-class GitFlowGenericFinishMixin(GitFlowGenericSelectTargetBranch):
-    def complete_flow(self, name=None):
-        self.git("flow", self.flow, "finish", name)
-        sublime.status_message("%s finished, checked out %s" %
-                               (self.flow.capitalize(),
-                                self.get_current_branch_name()))
+class GenericFinishMixin(CompleteMixin, GenericSelectTargetBranch):
+    command = 'finish'
 
 
-class GitFlowGenericPublishMixin(GitFlowGenericSelectTargetBranch):
-    def complete_flow(self, name=None):
-        self.git("flow", self.flow, "publish", name)
-        sublime.status_message("%s finished, checked out %s" %
-                               (self.flow.capitalize(),
-                                self.get_current_branch_name()))
+class GenericPublishMixin(CompleteMixin, GenericSelectTargetBranch):
+    command = 'publish'
+
+    def show_status_update(self):
+        sublime.status_message("%s %sed" % (self.flow.capitalize(),
+                                            self.command))
 
 
-class GsGitFlowFeatureStartCommand(GitFlowGenericStartMixin, GsFlowCommon):
+class GenericTrackCommand(CompleteMixin, GsFlowCommon):
+    command = 'track'
+
+    def run(self, name=None, **kwargs):
+        super(GenericTrackCommand, self).run(**kwargs)
+        if name:
+            self.complete_flow(name)
+        self.window.show_input_panel(self.query, "", self.complete_flow,
+                                     None, None)
+
+
+class GsGitFlowFeatureStartCommand(GenericStartMixin, GsFlowCommon):
     prefix_setting = 'prefix.feature'
     query = "Feature name?: "
     flow = "feature"
 
 
-class GsGitFlowFeatureFinishCommand(GitFlowGenericFinishMixin, GsFlowCommon):
+class GsGitFlowFeatureFinishCommand(GenericFinishMixin, GsFlowCommon):
     prefix_setting = 'prefix.feature'
     query = 'Finish feature: %s?'
     name_prompt = 'Finish which feature?'
     flow = "feature"
 
 
-class GsGitFlowFeaturePublishCommand(GitFlowGenericPublishMixin, GsFlowCommon):
+class GsGitFlowFeaturePublishCommand(GenericPublishMixin, GsFlowCommon):
     prefix_setting = 'prefix.feature'
     query = 'Publish feature: %s?'
     name_prompt = 'Publish which feature?'
     flow = "feature"
 
 
-class GsGitFlowFeaturePullCommand(GsFlowCommon):
+class GsGitFlowFeatureTrackCommand(GenericTrackCommand, GsFlowCommon):
+    query = 'Track which feature?:'
+    flow = "feature"
+
+
+class GsGitFlowFeaturePullCommand(CompleteMixin, GsFlowCommon):
     prefix_setting = 'prefix.feature'
     query = 'Pull which feature?:'
     flow = "feature"
+    command = 'pull'
 
     def run(self, name=None, **kwargs):
-        super(GsGitFlowFeaturePullCommand, self).run()
+        super(GsGitFlowFeaturePullCommand, self).run(**kwargs)
         self.remotes = list(self.get_remotes().keys())
         self._generic_select('Remote to pull feature from?',
                              self.remotes, self.on_remote_selected,
@@ -251,52 +271,55 @@ class GsGitFlowFeaturePullCommand(GsFlowCommon):
 
     def complete_flow(self, name=None):
         self.git("flow", self.flow, "pull", self.remote, name)
-        sublime.status_message("%s finished, checked out %s" %
-                               (self.flow.capitalize(),
-                                self.get_current_branch_name()))
+        self.show_status_update()
 
 
-class GsGitFlowReleaseStartCommand(GitFlowGenericStartMixin, GsFlowCommon):
+class GsGitFlowReleaseStartCommand(GenericStartMixin, GsFlowCommon):
     prefix_setting = 'prefix.release'
     query = "Release version?: "
     flow = "release"
 
 
-class GsGitFlowReleaseFinishCommand(GitFlowGenericFinishMixin, GsFlowCommon):
+class GsGitFlowReleaseFinishCommand(GenericFinishMixin, GsFlowCommon):
     prefix_setting = 'prefix.release'
     query = 'Finish release: %s?'
     name_prompt = 'Finish which release?'
     flow = "release"
 
 
-class GsGitFlowReleasePublishCommand(GitFlowGenericPublishMixin, GsFlowCommon):
+class GsGitFlowReleasePublishCommand(GenericPublishMixin, GsFlowCommon):
     prefix_setting = 'prefix.release'
     query = 'Publish release: %s?'
     name_prompt = 'Publish which release?'
     flow = "release"
 
 
-class GsGitFlowHotfixStartCommand(GitFlowGenericStartMixin, GsFlowCommon):
+class GsGitFlowReleaseTrackCommand(GenericTrackCommand, GsFlowCommon):
+    query = 'Track which release?:'
+    flow = "release"
+
+
+class GsGitFlowHotfixStartCommand(GenericStartMixin, GsFlowCommon):
     prefix_setting = 'prefix.hotfix'
     query = "Hotfix name?: "
     flow = "hotfix"
 
 
-class GsGitFlowHotfixFinishCommand(GitFlowGenericFinishMixin, GsFlowCommon):
+class GsGitFlowHotfixFinishCommand(GenericFinishMixin, GsFlowCommon):
     prefix_setting = 'prefix.hotfix'
     query = 'Finish hotfix: %s?'
     name_prompt = 'Finish which hotfix?'
     flow = "hotfix"
 
 
-class GsGitFlowHotfixPublishCommand(GitFlowGenericPublishMixin, GsFlowCommon):
+class GsGitFlowHotfixPublishCommand(GenericPublishMixin, GsFlowCommon):
     prefix_setting = 'prefix.hotfix'
     query = 'Publish hotfix: %s?'
     name_prompt = 'Publish which hotfix?'
     flow = "hotfix"
 
 
-class GsGitFlowSupportStartCommand(GitFlowGenericStartMixin, GsFlowCommon):
+class GsGitFlowSupportStartCommand(GenericStartMixin, GsFlowCommon):
     prefix_setting = 'prefix.support'
     query = "Support name?: "
     flow = "support"
