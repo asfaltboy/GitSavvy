@@ -668,4 +668,23 @@
             { "key": "setting.git_savvy.rebase_view", "operator": "equal", "operand": true }
         ]
     }
+
+    ///////////////////
+    // FLOW VIEW //
+    ///////////////////
+
+    // {
+    //     "keys": ["c"],
+    //     "command": "gs_flow_checkout",
+    //     "context": [
+    //         { "key": "setting.git_savvy.branch_view", "operator": "equal", "operand": true }
+    //     ]
+    // },
+    // {
+    //     "keys": ["r"],
+    //     "command": "gs_flow_refresh",
+    //     "context": [
+    //         { "key": "setting.git_savvy.branch_view", "operator": "equal", "operand": true }
+    //     ]
+    // },
 ]

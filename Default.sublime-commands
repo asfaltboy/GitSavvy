@@ -275,5 +275,9 @@
     {
         "caption": "git flow: hotfix publish",
         "command": "gs_git_flow_hotfix_publish"
+    },
+    {
+        "caption": "git: flow",
+        "command": "gs_show_flow"
     }
 ]
