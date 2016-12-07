@@ -380,9 +380,9 @@ class GsInlineDiffFocusEventListener(EventListener):
     """
 
     def on_activated(self, view):
-
-        if view.settings().get("git_savvy.inline_diff_view") == True:
-            view.run_command("gs_inline_diff_refresh")
+        if view.settings().get("git_savvy.inline_diff_view"):
+            if not view.settings().get("git_savvy.decode_stdout_error"):
+                view.run_command("gs_inline_diff_refresh")
 
 
 class GsInlineDiffStageOrResetBase(TextCommand, GitCommand):

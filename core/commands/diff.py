@@ -138,8 +138,9 @@ class GsDiffFocusEventListener(EventListener):
     """
 
     def on_activated(self, view):
-        if view.settings().get("git_savvy.diff_view") == True:
-            sublime.set_timeout_async(lambda: view.run_command("gs_diff_refresh"))
+        if view.settings().get("git_savvy.diff_view"):
+            if not view.settings().get("git_savvy.decode_stdout_error"):
+                sublime.set_timeout_async(lambda: view.run_command("gs_diff_refresh"))
 
 
 class GsDiffStageOrResetHunkCommand(TextCommand, GitCommand):
