@@ -27,6 +27,7 @@ class GsUpdateStatusBarCommand(TextCommand, GitCommand):
 
     def run(self, edit):
         if sublime.load_settings("GitSavvy.sublime-settings").get("git_status_in_status_bar"):
+            self._run_for_file = self.view.file_name()
             sublime.set_timeout_async(self.run_async, 0)
 
     def run_async(self):
